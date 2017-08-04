@@ -5,6 +5,7 @@
 #include <iostream>
 #include <memory>
 #include "FunctionCommand.h"
+#include "StaticCommand.h"
 
 #define DMSG(x) std::cout << x << std::endl
 #define EVENT_PTR std::shared_ptr<FunctionCommand<Sender, CustomArgs>>
@@ -26,6 +27,10 @@ public:
     }
 };
 
+void staticListener(Object& sender, CustomArgs e) {
+    DMSG("Static function executed!");
+}
+
 void testEvent(EventCommand<CustomArgs> &event) {
     Object obj(typeid(int), NULL);
     CustomArgs e(2);
@@ -38,9 +43,15 @@ int main() {
     Sender sender;
     FunctionCommand<Sender, CustomArgs> event1(&sender, &Sender::publicListener);
     EVENT_PTR event2 = sender.getListener();
+    StaticCommand<CustomArgs> event3(&staticListener);
+    StaticCommand<CustomArgs> event4([](Object &sender, CustomArgs e){
+        DMSG("Lambda function executed!");
+    });
     
     testEvent(event1);
     testEvent(*event2);
+    testEvent(event3);
+    testEvent(event4);
     
     DMSG("- DEMO FINISHED -");
     return 0;

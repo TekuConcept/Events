@@ -2,8 +2,8 @@
  * Created by TekuConcept on July 23, 2017
  */
 
-#ifndef FUNCTION_COMMAND_H
-#define FUNCTION_COMMAND_H
+#ifndef STATIC_COMMAND_H
+#define STATIC_COMMAND_H
 
 #include <memory>
 #include "EventCommand.h"
