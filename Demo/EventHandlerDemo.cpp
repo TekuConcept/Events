@@ -5,6 +5,8 @@
 #include <iostream>
 #include <memory>
 #include "EventHandler.h"
+#include "FunctionCommand.h"
+#include "StaticCommand.h"
 
 #define DMSG(x) std::cout << x << std::endl
 
@@ -15,12 +17,18 @@ public:
     }
 };
 
-class DummyCommandB : public EventCommand<EventArgs> {
+class DummyCommandB {
 public:
-    void invoke(Object& sender, EventArgs e) {
+    void callback(Object& sender, EventArgs e) {
         DMSG("Dummy Command B Executed!");
     }
 };
+
+void static_callback(Object& sender, EventArgs e) {
+    DMSG("Static Callback Executed!");
+}
+
+
 
 void testEvent(EventHandler<EventArgs> handler) {
     Object obj(typeid(int), NULL);
@@ -31,9 +39,15 @@ void testEvent(EventHandler<EventArgs> handler) {
 int main() {
     DMSG("- EVENT HANDLER DEMO -");
     
+    DummyCommandB cmd;
+    
     EventHandler<EventArgs> handler;
     handler += std::make_shared<DummyCommandA>();
-    handler += std::make_shared<DummyCommandB>();
+    handler += FunctionCommandPtr(DummyCommandB,EventArgs,cmd,callback);
+    handler += StaticCommandPtr(EventArgs,static_callback);
+    handler += LambdaCommandPtr(EventArgs,[&](Object&,EventArgs){
+        DMSG("Lambda Callback Executed!");
+    });
     testEvent(handler);
     
     DMSG("- DEMO FINISHED -");
