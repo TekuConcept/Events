@@ -16,11 +16,19 @@ template <class Args>
 class EventHandler {
 public:
     EventHandler() { }
+    EventHandler<Args>& operator=(const EventHandler<Args>&) = delete;
     EventHandler<Args>& operator += (EVENT_COMMAND_PTR delegate) {
-        _delegates_.push_back(delegate);
+        add(delegate);
         return *this;
     }
     EventHandler<Args>& operator -= (EVENT_COMMAND_PTR delegate) {
+        remove(delegate);
+        return *this;
+    }
+    void add(EVENT_COMMAND_PTR delegate) {
+        _delegates_.push_back(delegate);
+    }
+    void remove(EVENT_COMMAND_PTR delegate) {
         typename std::vector<EVENT_COMMAND_PTR>::iterator position =
         std::find(
                 _delegates_.begin(),
@@ -29,7 +37,6 @@ public:
         );
         if (position != _delegates_.end())
             _delegates_.erase(position);
-        return *this;
     }
     void invoke(Object& sender, Args e) {
         for(auto token : _delegates_)
