@@ -28,6 +28,9 @@ public:
     void add(EVENT_COMMAND_PTR delegate) {
         _delegates_.push_back(delegate);
     }
+    void clear() {
+        _delegates_.clear();
+    }
     void remove(EVENT_COMMAND_PTR delegate) {
         typename std::vector<EVENT_COMMAND_PTR>::iterator position =
         std::find(
